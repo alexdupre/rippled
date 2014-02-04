@@ -46,10 +46,10 @@ env = Environment(
 
 # Use a newer gcc on FreeBSD
 if FreeBSD:
-    env.Replace(CC = 'gcc46')
-    env.Replace(CXX = 'g++46')
-    env.Append(CCFLAGS = ['-Wl,-rpath=/usr/local/lib/gcc46'])
-    env.Append(LINKFLAGS = ['-Wl,-rpath=/usr/local/lib/gcc46'])
+    env.Replace(CC = 'gcc48')
+    env.Replace(CXX = 'g++48')
+    env.Append(CCFLAGS = ['-Wl,-rpath=/usr/local/lib/gcc48'])
+    env.Append(LINKFLAGS = ['-Wl,-rpath=/usr/local/lib/gcc48'])
 
 if OSX:
     env.Replace(CC= 'clang')
@@ -273,9 +273,9 @@ if not USING_CLANG:
     else:
         env.Append(CXXFLAGS = ['-std=c++11'])
 
-# FreeBSD doesn't support O_DSYNC
+# add to_string support in FreeBSD
 if FreeBSD:
-    env.Append(CPPFLAGS = ['-DMDB_DSYNC=O_SYNC'])
+    env.Append(CPPFLAGS = ['-D_GLIBCXX_USE_C99'])
 
 if OSX:
     env.Append(LINKFLAGS = ['-L/usr/local/opt/openssl/lib'])

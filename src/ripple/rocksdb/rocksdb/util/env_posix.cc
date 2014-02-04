@@ -13,6 +13,9 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
+#ifdef OS_FREEBSD
+#include <pthread_np.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1201,7 +1204,7 @@ class PosixEnv : public Env {
   }
 
   virtual uint64_t NowNanos() {
-#ifdef OS_LINUX
+#if defined(OS_LINUX) || defined(OS_FREEBSD)
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return static_cast<uint64_t>(ts.tv_sec) * 1000000000 + ts.tv_nsec;
@@ -1366,6 +1369,8 @@ class PosixEnv : public Env {
     static void* BGThreadWrapper(void* arg) {
     #if (__GLIBC__ * 1000 + __GLIBC_MINOR__) >= 2012
       pthread_setname_np (pthread_self(), "rocksdb:bg");
+    #elif defined(OS_FREEBSD)
+      pthread_set_name_np (pthread_self(), "rocksdb:bg");
     #else
       pthread_setname_np("rocksdb:bg");
     #endif
